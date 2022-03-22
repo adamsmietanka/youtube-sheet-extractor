@@ -1,5 +1,0 @@
-import sys
-from pytube import YouTube
-
-yt = YouTube(str(sys.argv[1]))
-yt.streams.filter(file_extension='mp4').order_by('resolution').desc().first().download(output_path='src'+yt.title)
