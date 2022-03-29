@@ -11,7 +11,7 @@ def create_imgs_matrix(directory, px_size=1000):
     global image_files   
     image_files = []
     # create list of all files in directory     
-    folder_files = [i for i in os.listdir(directory) if i != '.DS_Store']
+    folder_files = [i for i in os.listdir(directory) if i.endswith('.jpg')]
     folder_files = [i for i in sorted(folder_files, key=lambda x: int(os.path.splitext(x)[0]))]  
     
     # create images matrix
