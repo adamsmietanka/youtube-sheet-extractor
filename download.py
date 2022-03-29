@@ -50,11 +50,13 @@ class Extractor(YouTube):
         return err
 
     def extract_unique_images(self):
+        shutil.rmtree(self.dir_unique, ignore_errors=True)
         matrix = self.create_imgs_matrix()
         first_unique_no = 0
-        unique_images = [0]
-        for i in range(1, len(matrix)):
-            if self.mse(matrix[first_unique_no], matrix[i]) > 200:
+        unique_images = []
+        for i in range(len(matrix)):
+            mse = self.mse(matrix[first_unique_no], matrix[i])
+            if  10000 > mse and mse > 200:
                 unique_images.append(i)
                 first_unique_no = i
 
@@ -62,6 +64,23 @@ class Extractor(YouTube):
 
         for file_name in [f'{self.dir_img}/{i}.jpg' for i in unique_images]:
             shutil.copy(file_name, self.dir_unique)
+
+    def split_imgs(self, after_no):
+        sorted_files = self.sorted_files(self.dir_unique)
+        name_to_number = lambda x: int(os.path.splitext(x)[0])
+        files_after_no = [i for i in sorted_files if name_to_number(i) > after_no]
+        for i in files_after_no:
+            img = cv2.imread(f'{self.dir_unique}/{i}')
+            height, width, _ = img.shape
+
+            # Cut the image in half
+            height_cutoff = height // 2
+            s1 = img[:height_cutoff, :]
+            s2 = img[height_cutoff:, :]
+
+            # Save each half
+            cv2.imwrite(f"{self.dir_unique}/{name_to_number(i)}.jpg", s1)
+            cv2.imwrite(f"{self.dir_unique}/{name_to_number(i) + 1}.jpg", s2) 
 
     def make_pdf(self):
         pdf = FPDF()
@@ -79,4 +98,5 @@ yt = Extractor(sys.argv[1])
 yt.download_movie()
 yt.read_frames_as_jpeg()
 yt.extract_unique_images()
+yt.split_imgs(5)
 yt.make_pdf()
