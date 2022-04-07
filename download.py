@@ -53,16 +53,16 @@ class Extractor(YouTube):
         shutil.rmtree(self.dir_unique, ignore_errors=True)
         matrix = self.create_imgs_matrix()
         first_unique_no = 0
-        unique_images = []
+        unique_images_filenames = []
         for i in range(len(matrix)):
             mse = self.mse(matrix[first_unique_no], matrix[i])
             if  10000 > mse and mse > 200:
-                unique_images.append(i)
+                unique_images_filenames.append(self.sorted_files(self.dir_img)[i])
                 first_unique_no = i
 
         os.makedirs(self.dir_unique, exist_ok=True)
 
-        for file_name in [f'{self.dir_img}/{i}.jpg' for i in unique_images]:
+        for file_name in [f'{self.dir_img}/{i}' for i in unique_images_filenames]:
             shutil.copy(file_name, self.dir_unique)
 
     def split_imgs(self, after_no):
@@ -93,7 +93,7 @@ class Extractor(YouTube):
         pdf.output(f'{self.dir}/sheet.pdf')
 
     
-yt = Extractor(sys.argv[1])
+yt = Extractor("https://www.youtube.com/watch?v=UWeSrfE35Wc")
 
 yt.download_movie()
 yt.read_frames_as_jpeg()
