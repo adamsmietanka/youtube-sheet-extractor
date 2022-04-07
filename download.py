@@ -93,7 +93,7 @@ class Extractor(YouTube):
         pdf.output(f'{self.dir}/sheet.pdf')
 
     
-yt = Extractor("https://www.youtube.com/watch?v=UWeSrfE35Wc")
+yt = Extractor(sys.argv[1])
 
 yt.download_movie()
 yt.read_frames_as_jpeg()
