@@ -95,8 +95,9 @@ class Extractor(YouTube):
     
 yt = Extractor(sys.argv[1])
 
-yt.download_movie()
-yt.read_frames_as_jpeg()
-yt.extract_unique_images()
-yt.split_imgs(5)
+if not os.path.exists(yt.dir):
+    yt.download_movie()
+    yt.read_frames_as_jpeg()
+    yt.extract_unique_images()
+    yt.split_imgs(5)
 yt.make_pdf()
